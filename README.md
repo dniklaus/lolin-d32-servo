@@ -5,10 +5,6 @@ With this project you have a good starting point to create your own application 
 
 The project is able to run and has been tested on the following controller boards:
 
-* [Arduino Uno](https://store.arduino.cc/arduino-uno-rev3)
-* [Arduino Mega 2560](https://store.arduino.cc/arduino-mega-2560-rev3)
-* [Arduino Due](https://store.arduino.cc/arduino-due)
-* [Adafruit Feather M0](https://www.adafruit.com/?q=Adafruit%20Feather%20M0)
 * [Wemos D1 Mini](https://de.aliexpress.com/item/32764312651.html)
 * [NodeMcu](https://de.aliexpress.com/item/32733851178.html)
 * [Adafruit Huzzah ESP8266](https://learn.adafruit.com/adafruit-huzzah-esp8266-breakout)
@@ -24,7 +20,7 @@ It comprises of several components helping with debugging and integrating embedd
 
 This project demonstrates how to integrate the following **components**:
 
-* [***Timer***](https://github.com/dniklaus/wiring-timer): configurable recurring or non-recurring timer to schedule events without having to use Arduino delay() function; helps to improve your application's architecture by encapsulating the timers into your components and thus make them active
+* [***Timer***](https://github.com/dniklaus/spin-timer): Universal timer with 1 millisecond resolution, supporting OOP principles, providing recurring and non-recurring mode.
 * [***DbgTrace***](https://github.com/ERNICommunity/dbg-trace): debug trace log environment with configurable log levels
 * [***Debug-Cli***](https://github.com/ERNICommunity/debug-cli): interactive console environment with command tree that can be built up decentralized (from any different location in your application code and within any component)
 * [***App-Dbg***](https://github.com/dniklaus/wiring-app-debug): boilerplate code setting up all the debug environment such as CLI and Tracing and free RAM info printer
@@ -65,8 +61,8 @@ Install PlatformIO using the Python Package Manager
 
   1. Create a directory where your code project shall be cloned into. E.g. `C:\git\pio-prj`
   2. Clone this repository into the folder you created before: 
-     `git clone git@github.com:ERNICommunity/wiring-skeleton.git` (ssh) or
-     `git clone https://github.com/ERNICommunity/wiring-skeleton.git` (ssl)
+     `git clone git@github.com:dniklaus/wiring-skeleton.git` (ssh) or
+     `git clone https://github.com/dniklaus/wiring-skeleton.git` (ssl)
   3. Open a command shell in the just cloned project folder, i.e. in `C:\git\pio-prj\wiring-skeleton`
   4. Run the command `pio init --ide vscode`. 
      This prepares the project to be edited using Visual Studio Code.
@@ -88,8 +84,8 @@ In the menu click on *File > Open Folder...* and choose the project folder that 
 
   1. Create a directory where your **Eclipse workspace** will be stored and where this project shall be cloned into. E.g. `C:\git\pio-prj`
   2. Clone this repository into the folder you created before: 
-     `git clone git@github.com:ERNICommunity/wiring-skeleton.git` (ssh) or
-     `git clone https://github.com/ERNICommunity/wiring-skeleton.git` (ssl)
+     `git clone git@github.com:dniklaus/wiring-skeleton.git` (ssh) or
+     `git clone https://github.com/dniklaus/wiring-skeleton.git` (ssl)
   3. Open a command shell in the just cloned project folder, i.e in `C:\git\pio-prj\wiring-skeleton`
   4. Run the command `pio init --ide eclipse`. 
      This prepares the project to be edited using Eclipse CDT.
@@ -161,12 +157,11 @@ This chapter lists all the libraries this project is using.
 
 ### PlatformIO Libraries
 
-|ID|Name|URL|Description|
-|:---|:------------|:----------------|:-----------------------|
-| 173|SerialCommand|https://github.com/kroimon/Arduino-SerialCommand|A Wiring/Arduino library to tokenize and parse commands received over a serial port.|
-|1699|wiring-timer |https://github.com/dniklaus/wiring-timer|Universal recurring or non-recurring Timer.|
-|1716|debug-cli|https://github.com/ERNICommunity/debug-cli|Debug CLI for Embedded Applications - Command Line  Interface for debugging and testing based on object oriented tree structure.|
-|1717|dbg-trace|https://github.com/ERNICommunity/dbg-trace|Debug Trace component for Embedded Applications - Debug and Trace Log message system based on trace ports with adjustable levels.|
+|Name|URL|Description|
+|:------------|:----------------|:-----------------------|
+|dniklaus/spin-timer |https://github.com/dniklaus/spin-timer|Universal recurring or non-recurring Timer.|
+|ERNICommunity/debug-cli|https://github.com/ERNICommunity/debug-cli|Debug CLI for Embedded Applications - Command Line  Interface for debugging and testing based on object oriented tree structure.|
+|ERNICommunity/dbg-trace|https://github.com/ERNICommunity/dbg-trace|Debug Trace component for Embedded Applications - Debug and Trace Log message system based on trace ports with adjustable levels.|
 
 
 
@@ -174,6 +169,7 @@ This chapter lists all the libraries this project is using.
 
 |Name|URL|Description|
 |:------|:---------------------|:-------------------------------|
+|Arduino-SerialCommand|https://github.com/dniklaus/Arduino-SerialCommand|A Wiring/Arduino library to tokenize and parse commands received over a serial port.|
 |RamUtils|https://github.com/dniklaus/arduino-utils-mem|Arduino Memory Utilities, provides free heap information|
 |App-Debug  |https://github.com/dniklaus/wiring-app-debug.git|Wiring application debug setup component                                                                                         |
 
@@ -181,17 +177,17 @@ This chapter lists all the libraries this project is using.
 
 ## Create a new project based on this skeleton application
 
-To use *wiring-skeleton* as a template for a new project, it has to be forked locally.
+To use *wiring-skeleton-wifi* as a template for a new project, it has to be forked locally.
 
 1. On **GitHub:** create new repository, i.e. *my-test*
 2. Within a **Git Bash:**
-   1. Clone the *wiring-skeleton* as a **bare repository**:
+   1. Clone the *wiring-skeleton-wifi* as a **bare repository**:
    ```bash
-      git clone --bare git@github.com:dniklaus/wiring-skeleton.git
+      git clone --bare git@github.com:dniklaus/wiring-skeleton-wifi.git
    ```
    2. Replace origin with the one for your new project (i.e. project *my-test*, with *your-name* as GitHub user name):
    ```bash
-      cd ./wiring-skeleton.git
+      cd ./wiring-skeleton-wifi.git
       git remote rm origin
       git remote add origin git@github.com:your-name/my-test.git
    ```
@@ -204,8 +200,8 @@ To use *wiring-skeleton* as a template for a new project, it has to be forked lo
       cd ..
       git clone git@github.com:your-name/my-test.git
    ```
-   5. Remove the bare *wiring-skeleton* template project:
+   5. Remove the bare *wiring-skeleton-wifi* template project:
    ```bash
-      rm -rf ./wiring-skeleton.git
+      rm -rf ./wiring-skeleton-wifi.git
    ```
 
