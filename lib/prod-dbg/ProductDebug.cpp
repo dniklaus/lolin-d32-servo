@@ -8,14 +8,15 @@
 #include <Arduino.h>
 #include <SerialCommand.h>
 #include <AppDebug.h>
+#include "ProductWiFiCmds.h"
 #include "ProductDebug.h"
 
-class SerialCommand;
+AppDebug* ProductDebug::s_appDebug = 0;
 
 void ProductDebug::setupProdDebugEnv(SerialCommand* sCmd)
 {
-  AppDebug appDebug(sCmd);
-  appDebug.setupDebugEnv();
+  s_appDebug = new AppDebug(sCmd);
+  s_appDebug->setupDebugEnv();
 
   Serial.println();
   Serial.println("---------------------------------------------");

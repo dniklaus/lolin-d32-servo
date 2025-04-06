@@ -1,21 +1,28 @@
 /*
  * wiring-skeleton.cpp
  *
- *  Created on: 15.03.2017
+ *  Created on: 05.02.2025
  *      Author: niklausd
  */
 
 #include <Arduino.h>
 #include <App.h>
 
-App app;
+static App* s_app;
 
 void setup()
 {
-  app.setup();
+  s_app = new App();
+  if (0 != s_app)
+  {
+    s_app->setup();
+  }
 }
 
 void loop()
 {
-  app.loop();
+  if (0 != s_app)
+  {
+    s_app->loop();
+  }
 }
