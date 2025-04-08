@@ -9,6 +9,7 @@
 #define APP_H_
 
 class SerialCommand;
+class Battery;
 class Indicator;
 
 class App
@@ -23,7 +24,9 @@ public:
 
 private:
   SerialCommand* m_sCmd;
+  Battery* m_battery;
   Indicator* m_led;
+  Indicator* m_servoPwrEn;
 
 private:
   static const char s_termChar;

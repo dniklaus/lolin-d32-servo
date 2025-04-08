@@ -7,8 +7,11 @@
 #include <Arduino.h>
 #include <SerialCommand.h>
 #include <SpinTimer.h>
+#include <Battery.h>
+#include "MyBatteryAdapter.h"
 #include <Indicator.h>
 #include <IndicatorFactory.h>
+#include "MyServoPwrEnIndicatorAdapter.h"
 #include "MyBuiltinLedIndicatorAdapter.h"
 #include <Button.h>
 #include <ButtonEdgeDetector.h>
@@ -23,6 +26,9 @@
 #include "ProductWiFiCmds.h"
 #include "LedTestBlinkPublisher.h"
 #include "TestLedMqttSubscriber.h"
+#include <Axis.h>
+#include <MyServoHal.h>
+#include <DbgCmd_SetAngle.h>
 #include "App.h"
 
 #define MQTT_SERVER "test.mosquitto.org"
@@ -42,10 +48,13 @@ WiFiClient wifiClient;
 #endif
 
 const char App::s_termChar = '\n';
+Axis* axis = 0;
 
 App::App()
 : m_sCmd(new SerialCommand(s_termChar))
+, m_battery(0)
 , m_led(0)
+, m_servoPwrEn(0)
 { }
 
 App::~App()
@@ -56,8 +65,14 @@ App::~App()
     m_led->assignAdapter(0);
   }
 
+  delete m_servoPwrEn;
+  m_servoPwrEn = 0;
+
   delete m_led;
   m_led = 0;
+
+  delete m_battery;
+  m_battery = 0;
 
   delete m_sCmd;
   m_sCmd = 0;
@@ -71,6 +86,22 @@ void App::setup()
   // indicator LED
   m_led = IndicatorFactory::createIndicator("led", "Built in LED.");
   m_led->assignAdapter(new MyBuiltinLedIndicatorAdapter());
+
+  // Servo Power Enable signal
+  m_servoPwrEn = IndicatorFactory::createIndicator("srvpwr", "Servo Power Enable.");
+  m_servoPwrEn->assignAdapter(new MyServoPwrEnIndicatorAdapter());
+  
+  //-----------------------------------------------------------------------------
+  // Battery Voltage Surveillance
+  //-----------------------------------------------------------------------------
+  BatteryThresholdConfig battCfg = 
+  { 
+    3.4, // BATT_WARN_THRSHD [V]
+    3.2, // BATT_STOP_THRSHD [V]
+    3.1, // BATT_SHUT_THRSHD [V]
+    0.1  // BATT_HYST        [V]
+  };
+  m_battery = new Battery(new MyBatteryAdapter(m_led, m_servoPwrEn), battCfg);
 
   #ifdef USER_BTN
     new Button(new ArduinoDigitalInPinSupervisor(USER_BTN), new ButtonEdgeDetector(), new MyButtonAdapter(m_led));
@@ -103,6 +134,28 @@ void App::setup()
     new MqttTopicPublisher("test/startup", WiFi.macAddress().c_str(), MqttTopicPublisher::DO_AUTO_PUBLISH);
     // new LedTestBlinkPublisher();  // TODO: fix BUG, when this object gets created
   #endif
+
+  //------------------------------------------------------------------------------
+  // Definition der GPIO-Pins für die Servos
+  //------------------------------------------------------------------------------
+  const int servoPins[] = {13, 12, 14, 27};
+  const int numServos = 4;
+  for (unsigned int i = 0; i < numServos; i++)
+  {
+      char axisName[10];
+      memset(axisName, 0, sizeof(axisName));
+      sprintf(axisName, "ax%d", i);
+      axis = new Axis(axisName);
+      if (0 != axis)
+      {
+          if ((i == 1) || (i == 2))
+          {
+              axis->setReversePosition(true);
+          }
+          axis->attachServoHal(new MyServoHal(servoPins[i]));
+          new DbgCmd_SetAngle(axis);
+      }
+  }  
 }
 
 void App::loop()
