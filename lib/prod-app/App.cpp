@@ -29,6 +29,8 @@
 #include <Axis.h>
 #include <MyServoHal.h>
 #include <DbgCmd_SetAngle.h>
+#include <CmdSequence.h>
+#include "TargetReachedNotifier.h"
 #include "App.h"
 
 #define MQTT_SERVER "test.mosquitto.org"
@@ -136,7 +138,7 @@ void App::setup()
   #endif
 
   //------------------------------------------------------------------------------
-  // Definition der GPIO-Pins für die Servos
+  // Servo objects creation
   //------------------------------------------------------------------------------
   const int servoPins[] = {13, 12, 14, 27};
   const int numServos = 4;
@@ -153,6 +155,7 @@ void App::setup()
               axis->setReversePosition(true);
           }
           axis->attachServoHal(new MyServoHal(servoPins[i]));
+          axis->attachTargetReachedNotifier(new TargetReachedNotifier(axis, static_cast<CmdSequence*>(0)));
           new DbgCmd_SetAngle(axis);
       }
   }  
